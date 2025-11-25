@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${Titulo}">Detalle de empleado</title>
+
+    <!-- Vincular el CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <header class="header">
+        <h1 class="main-title">Gestión de Empleados</h1>
+        <p class="subtitle">Información detallada y lista de empleados del comercio</p>
+    </header>
+
+    <!-- Bloque de información de un solo empleado (último registrado) -->
+    <section class="card" th:if="${UltimoEmpleado != null}">
+        <h2 class="card-title">Último empleado</h2>
+        <ul class="employee-info">
+            <li>
+                <span class="label">Nombre:</span>
+                <span class="value" th:text="${UltimoEmpleado.nombre}"></span>
+            </li>
+            <li>
+                <span class="label">Apellido:</span>
+                <span class="value" th:text="${UltimoEmpleado.apellido}"></span>
+            </li>
+            <li>
+                <span class="label">Dirección:</span>
+                <span class="value"
+                      th:text="${UltimoEmpleado.direccion != null ? UltimoEmpleado.direccion : 'No tiene dirección'}"></span>
+            </li>
+            <li>
+                <span class="label">Puesto:</span>
+                <span class="value" th:text="${UltimoEmpleado.puesto}"></span>
+            </li>
+            <li>
+                <span class="label">Edad:</span>
+                <span class="value" th:text="${UltimoEmpleado.edad}"></span>
+            </li>
+            <li>
+                <span class="label">Teléfono:</span>
+                <span class="value" th:text="${UltimoEmpleado.telefono}"></span>
+            </li>
+            <li>
+                <span class="label">ID:</span>
+                <span class="value" th:text="${UltimoEmpleado.id}"></span>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Tabla con lista de empleados -->
+    <section class="card">
+        <h2 class="card-title">Lista de Empleados</h2>
+
+        <a class="btn btn-edit" th:href="@{/empleados/nuevo}">
+            + Nuevo empleado
+        </a>
+
+        <!-- Si hay empleados, se muestra la tabla -->
+        <div class="table-wrapper"
+             th:if="${EmpleadosComercio != null and !#lists.isEmpty(EmpleadosComercio)}">
+            <table class="employee-table">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Dirección</th>
+                    <th>Puesto</th>
+                    <th>Edad</th>
+                    <th>Teléfono</th>
+                    <th>Departamento / ID</th>
+                    <th>Creado</th>
+                    <th>Actualizado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="Empleado : ${EmpleadosComercio}">
+                    <td th:text="${Empleado.nombre}"></td>
+                    <td th:text="${Empleado.apellido}"></td>
+                    <td th:text="${Empleado.direccion}"></td>
+                    <td th:text="${Empleado.puesto}"></td>
+                    <td th:text="${Empleado.edad}"></td>
+                    <td th:text="${Empleado.telefono}"></td>
+                    <td th:text="${Empleado.id}"></td>
+
+                    <!-- createdAt y updatedAt pueden ser null si recién migraste -->
+                    <td th:text="${Empleado.createdAt != null ? #temporals.format(Empleado.createdAt, 'dd/MM/yyyy HH:mm') : 'N/D'}"></td>
+                    <td th:text="${Empleado.updatedAt != null ? #temporals.format(Empleado.updatedAt, 'dd/MM/yyyy HH:mm') : 'N/D'}"></td>
+
+                    <!-- CELDA DE ACCIONES -->
+                    <td class="actions-cell">
+                        <!-- Botón Editar -->
+                        <a class="btn btn-edit"
+                           th:href="@{'/empleados/editar/' + ${Empleado.id}}">
+                            Editar
+                        </a>
+
+                        <!-- Botón Eliminar -->
+                        <form class="inline-form"
+                              th:action="@{'/empleados/eliminar/' + ${Empleado.id}}"
+                              method="post"
+                              onsubmit="return confirm('¿Seguro que deseas eliminar este empleado?');">
+                            <button type="submit" class="btn btn-delete">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Si NO hay empleados, mostramos un mensaje amigable -->
+        <p class="subtitle"
+           th:if="${EmpleadosComercio == null or #lists.isEmpty(EmpleadosComercio)}">
+            No hay empleados cargados todavía.
+        </p>
+    </section>
+
+</div>
+
+</body>
+</html>

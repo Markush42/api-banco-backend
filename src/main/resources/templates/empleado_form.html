@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${Titulo}">Empleado</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <header class="header">
+        <h1 class="main-title" th:text="${Titulo}">Empleado</h1>
+        <p class="subtitle"
+           th:text="${Empleado.id} != null ? 'Editar los datos del empleado existente' : 'Crear un nuevo empleado'">
+            Formulario de empleado
+        </p>
+    </header>
+
+    <section class="card form-card">
+        <h2 class="card-title">Datos del empleado</h2>
+
+        <!-- Formulario: sirve tanto para NUEVO como para EDITAR -->
+        <form th:action="@{/empleados/guardar}"
+              th:object="${Empleado}"
+              method="post"
+              class="empleado-form">
+
+            <!-- Campo oculto para el ID (null en nuevo, valor en editar) -->
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="form-grid">
+                <!-- Nombre -->
+                <div class="form-control">
+                    <label th:for="*{nombre}">Nombre</label>
+                    <input th:field="*{nombre}"
+                           type="text"
+                           placeholder="Nombre"
+                           required>
+                </div>
+
+                <!-- Apellido -->
+                <div class="form-control">
+                    <label th:for="*{apellido}">Apellido</label>
+                    <input th:field="*{apellido}"
+                           type="text"
+                           placeholder="Apellido"
+                           required>
+                </div>
+
+                <!-- Puesto -->
+                <div class="form-control">
+                    <label th:for="*{puesto}">Puesto</label>
+                    <input th:field="*{puesto}"
+                           type="text"
+                           placeholder="Puesto (ej: Desarrollador Backend)"
+                           required>
+                </div>
+
+                <!-- Edad -->
+                <div class="form-control">
+                    <label th:for="*{edad}">Edad</label>
+                    <input th:field="*{edad}"
+                           type="number"
+                           min="18"
+                           max="70"
+                           placeholder="Edad"
+                           required>
+                </div>
+
+                <!-- Teléfono -->
+                <div class="form-control">
+                    <label th:for="*{telefono}">Teléfono</label>
+                    <input th:field="*{telefono}"
+                           type="text"
+                           placeholder="+54 9 ..."
+                           required>
+                </div>
+
+                <!-- Dirección (ocupa el ancho completo en pantallas grandes) -->
+                <div class="form-control form-control-full">
+                    <label th:for="*{direccion}">Dirección</label>
+                    <input th:field="*{direccion}"
+                           type="text"
+                           placeholder="Dirección completa">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-edit">
+                    <span th:text="${Empleado.id} != null ? 'Guardar cambios' : 'Crear empleado'">
+                        Guardar
+                    </span>
+                </button>
+
+                <a th:href="@{/empleados/detalles}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </section>
+
+</div>
+
+</body>
+</html>
